@@ -35,8 +35,6 @@ alias vi='vim'
 # Options
 set -o noclobber
 set bell-style off
-bind "TAB:menu-complete"
-bind "set show-all-if-ambiguous on"
 
 export VISUAL="emacs -nw"
 export SHORT_HOST=`/bin/hostname -s`
