@@ -5,6 +5,10 @@ if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
 
+# Readline bindings to make bash completion more zsh-like
+bind "TAB:menu-complete"
+bind "set show-all-if-ambiguous on"
+
 # User specific environment and startup programs
 
 PATH=$PATH:$HOME/bin

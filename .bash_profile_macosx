@@ -4,4 +4,8 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
     . $(brew --prefix)/etc/bash_completion
 fi
 
+# Readline bindings to make bash completion more zsh-like
+bind "TAB:menu-complete"
+bind "set show-all-if-ambiguous on"
+
 export PATH=/usr/local/bin:$HOME/bin:$PATH
