@@ -35,10 +35,6 @@ alias vi='vim'
 # Options
 set -o noclobber
 set bell-style off
-if [[ $- == "*i*" ]]; then 
-    bind "TAB:menu-complete"
-    bind "set show-all-if-ambiguous on"
-fi
 
 export VISUAL="emacs -nw"
 export SHORT_HOST=`/bin/hostname -s`
