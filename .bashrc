@@ -93,3 +93,17 @@ proxy()
 }
 
 proxy on quiet
+
+# Docker environment setup
+DOCKER_MACHINE_DEFAULT="default"
+
+docker-env()
+{
+    eval "$(docker-machine env ${1:-$DOCKER_MACHINE_DEFAULT})"
+    docker_machine_ip="$(docker-machine ip $DOCKER_MACHINE_NAME)"
+    if ! [[ "$no_proxy" =~ (^|,)"${docker_machine_ip}"(,|$) ]]; then
+        no_proxy=${no_proxy},${docker_machine_ip}
+        export no_proxy
+    fi
+    echo "Set up docker environment for machine \"$DOCKER_MACHINE_NAME\""
+}
