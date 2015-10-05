@@ -105,5 +105,5 @@ docker-env()
         no_proxy=${no_proxy},${docker_machine_ip}
         export no_proxy
     fi
-    echo "Set up docker environment for machine \"$DOCKER_MACHINE_NAME\""
+    echo "Set up docker environment for machine \"$DOCKER_MACHINE_NAME\" with IP address ${docker_machine_ip}"
 }
