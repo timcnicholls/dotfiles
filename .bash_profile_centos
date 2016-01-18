@@ -6,8 +6,11 @@ if [ -f ~/.bashrc ]; then
 fi
 
 # Readline bindings to make bash completion more zsh-like
-bind "TAB:menu-complete"
-bind "set show-all-if-ambiguous on"
+if [[ $- =~ i ]];
+then
+  bind "TAB:menu-complete"
+  bind "set show-all-if-ambiguous on"
+fi
 
 # User specific environment and startup programs
 

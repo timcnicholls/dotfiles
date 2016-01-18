@@ -92,4 +92,7 @@ proxy()
     esac
 }
 
-proxy on quiet
+proxy off quiet
+
+# added by travis gem
+[ -f /u/tcn45/.travis/travis.sh ] && source /u/tcn45/.travis/travis.sh
