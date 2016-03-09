@@ -31,6 +31,7 @@ alias ll='ls -al'
 alias ldir='ls -dF *(/)'
 alias lldir='ls -dlF *(/)'
 alias vi='vim'
+alias pph='export PYTHONPATH=`pwd`:${PYTHONPATH}'
 
 # Options
 set -o noclobber
