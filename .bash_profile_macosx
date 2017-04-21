@@ -9,3 +9,9 @@ bind "TAB:menu-complete"
 bind "set show-all-if-ambiguous on"
 
 export PATH=/usr/local/bin:$HOME/bin:$PATH
+
+GOPATH=~/Develop/tools/go
+if [ -d  $GOPATH ]; then
+    export GOPATH
+    export PATH=${PATH}:${GOPATH}/bin
+fi

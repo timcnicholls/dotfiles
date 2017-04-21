@@ -111,3 +111,6 @@ docker-env()
     echo "Set up docker environment for machine \"$DOCKER_MACHINE_NAME\" with IP address ${docker_machine_ip}"
 }
 
+
+# added by travis gem
+[ -f /Users/tcn/.travis/travis.sh ] && source /Users/tcn/.travis/travis.sh
