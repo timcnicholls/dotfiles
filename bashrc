@@ -6,6 +6,31 @@ if [ -f ~/.profile ]; then
    . ~/.profile
 fi
 
+pathadd()
+{
+    path=${1:-/usr/bin}
+    posn=${2:-before}
+    if [ -d $path ]; then
+        if  [[ ":$PATH:" != *":$path:"* ]]; then
+            if [ $posn == 'after' ]; then
+                export PATH=$PATH:$path
+            else
+                export PATH=$path:$PATH
+            fi
+        fi
+    fi
+}
+
+# Manage paths - only add if not already present
+pathadd $HOME/bin
+pathadd /usr/local/bin
+
+GOPATH=$HOME/Develop/tools/go
+if [ -d $GOPATH ]; then
+    export GOPATH
+    pathadd $GOPATH after
+fi
+
 # Shell prompts, including changing terminal window titles
 case ${TERM} in
   xterm*)
@@ -95,9 +120,6 @@ proxy()
 
 proxy off quiet
 
-# added by travis gem
-[ -f /u/tcn45/.travis/travis.sh ] && source /u/tcn45/.travis/travis.sh
-
 # Docker environment setup
 DOCKER_MACHINE_DEFAULT="default"
 
@@ -114,4 +136,12 @@ docker-env()
 
 
 # added by travis gem
-[ -f /Users/tcn/.travis/travis.sh ] && source /Users/tcn/.travis/travis.sh
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+
+if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+   export WORKON_HOME=$HOME/.virtualenvs
+   if [ ! -d $WORKON_HOME ]; then
+       mkdir $WORKON_HOME
+   fi
+   source /usr/local/bin/virtualenvwrapper.sh
+fi
