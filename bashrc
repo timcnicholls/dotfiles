@@ -6,6 +6,10 @@ if [ -f ~/.profile ]; then
    . ~/.profile
 fi
 
+if [ -f /aeg_sw/etc/profile ]; then
+   . /aeg_sw/etc/profile
+fi
+
 pathadd()
 {
     path=${1:-/usr/bin}
@@ -138,10 +142,30 @@ docker-env()
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
-if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
-   export WORKON_HOME=$HOME/.virtualenvs
-   if [ ! -d $WORKON_HOME ]; then
+#if [ -f $(which virtualenvwrapper.sh 2>/dev/null) ]; then
+#   echo "Yup"
+#   export WORKON_HOME=$HOME/.virtualenvs
+#   if [ ! -d $WORKON_HOME ]; then
+#       mkdir $WORKON_HOME
+#   fi
+#   #source $(which virtualenvwrapper.sh)
+#i
+
+venvwrapper()
+{
+  venvwrap_script="virtualenvwrapper.sh"
+  if command -v ${venvwrap_script} >/dev/null 2>&1; then
+    export WORKON_HOME=$HOME/.virtualenvs
+    if [ ! -d $WORKON_HOME ]; then
        mkdir $WORKON_HOME
-   fi
-   source /usr/local/bin/virtualenvwrapper.sh
-fi
+    fi
+    source $(command -v ${venvwrap_script})
+  else
+    echo "Cannot locate ${venvwrap_script}"
+  fi
+}
+
+# Source AEG module profile if present
+AEG_MODULE_PROFILE=/aeg_sw/etc/profile
+[ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
+
