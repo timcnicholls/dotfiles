@@ -1,5 +1,11 @@
 # .bash_profile
 
+if [ -d /aeg_sw ]; then
+   export PATH=$PATH:${HOME}/.local/bin
+   powerline-daemon -q
+   export POWERLINE_ENABLED=1
+fi
+
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
@@ -17,3 +23,5 @@ fi
 PATH=$PATH:$HOME/bin
 
 export PATH
+
+
