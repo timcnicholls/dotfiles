@@ -1,3 +1,8 @@
+export PATH=$PATH:${HOME}/Library/Python/2.7/bin
+export POWERLINE_PACKAGE_PATH=${HOME}/Library/Python/2.7/lib/python/site-packages/powerline
+powerline-daemon -q
+export POWERLINE_ENABLED=1
+
 if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -17,3 +22,4 @@ bind "set show-all-if-ambiguous on"
 #fi
 
 #test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
