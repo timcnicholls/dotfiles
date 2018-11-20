@@ -170,5 +170,5 @@ AEG_MODULE_PROFILE=/aeg_sw/etc/profile
 if [ -v POWERLINE_ENABLED ]; then
     export POWERLINE_BASH_CONTINUATION=1
     export POWERLINE_BASH_SELECT=1
-    source ${HOME}/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+    source ${POWERLINE_PACKAGE_PATH}/bindings/bash/powerline.sh
 fi
