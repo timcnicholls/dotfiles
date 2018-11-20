@@ -6,10 +6,6 @@ if [ -f ~/.profile ]; then
    . ~/.profile
 fi
 
-if [ -f /aeg_sw/etc/profile ]; then
-   . /aeg_sw/etc/profile
-fi
-
 pathadd()
 {
     path=${1:-/usr/bin}
@@ -169,3 +165,10 @@ venvwrapper()
 AEG_MODULE_PROFILE=/aeg_sw/etc/profile
 [ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
 
+[ -d /aeg_sw ] && alias code='module load git && module load python/2 && /usr/bin/code'
+
+if [ -v POWERLINE_ENABLED ]; then
+    export POWERLINE_BASH_CONTINUATION=1
+    export POWERLINE_BASH_SELECT=1
+    source ${HOME}/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+fi
