@@ -1,0 +1,12 @@
+# Make Tab cycle between possible completions
+# Cycle forward: Tab
+# Cycle backward: Shift-Tab
+
+TAB: menu-complete
+"\e[Z": menu-complete-backward
+
+# Show all matches if ambiguous
+set show-all-if-ambiguous on
+
+# Suppress terminal bell
+set bell-style none
