@@ -8,6 +8,7 @@
     ~/.bashrc: bashrc
     ~/.bash_profile: bash_profile
     ~/.inputrc: inputrc
+    ~/.gitconfig: gitconfig
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
