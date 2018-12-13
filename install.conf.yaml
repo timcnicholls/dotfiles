@@ -8,7 +8,6 @@
     ~/.bashrc: bashrc
     ~/.bash_profile: bash_profile
     ~/.inputrc: inputrc
-    ~/.xfce4_profile: xfce4_profile
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
