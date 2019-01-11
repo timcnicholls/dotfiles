@@ -167,7 +167,7 @@ AEG_MODULE_PROFILE=/aeg_sw/etc/profile
 
 [ -d /aeg_sw ] && alias code='module load git && module load python/2 && /usr/bin/code'
 
-if [ -v POWERLINE_ENABLED ]; then
+if [ "$POWERLINE_ENABLED" -eq 1 ]; then
     export POWERLINE_BASH_CONTINUATION=1
     export POWERLINE_BASH_SELECT=1
     source ${POWERLINE_PACKAGE_PATH}/bindings/bash/powerline.sh
