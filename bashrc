@@ -161,6 +161,12 @@ venvwrapper()
   fi
 }
 
+workon()
+{
+    venvwrapper
+    workon ${*}
+}
+
 # Source AEG module profile if present
 AEG_MODULE_PROFILE=/aeg_sw/etc/profile
 [ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
