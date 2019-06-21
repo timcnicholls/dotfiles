@@ -158,13 +158,13 @@ venvwrapper()
     source $(command -v ${venvwrap_script})
   else
     echo "Cannot locate ${venvwrap_script}"
+    return 1
   fi
 }
 
 workon()
 {
-    venvwrapper
-    workon ${*}
+    venvwrapper && workon ${*}
 }
 
 # Source AEG module profile if present
