@@ -5,15 +5,49 @@ case ${OSTYPE} in
         POWERLINE_PATH=${HOME}/Library/Python/2.7/bin
         POWERLINE_PACKAGE_PATH=${HOME}/Library/Python/2.7/lib/python/site-packages/powerline
         HAS_BREW=1
+        PROJ_DEV_DIR=${HOME}/Develop/projects
         ;;
     linux-gnu)
-        POWERLINE_NEED_PATH=/aeg_sw
+        AEG_SW_DIR=/aeg_sw
+        POWERLINE_NEED_PATH=${AEG_SW_DIR}
         POWERLINE_PATH=${HOME}/.local/bin
         POWERLINE_PACKAGE_PATH=${HOME}/.local/lib/python2.7/site-packages/powerline
+        PROJ_DEV_DIR=${HOME}/develop/projects
         ;;
     *)
         echo "Unknown OS type"
 esac
+
+if [ -d ${AEG_SW_DIR} ]; then
+    export AEG_USER_DIR=/aeg_sw/work/users/${USER}
+    export AEG_PROJ_DEV_DIR=${AEG_USER_DIR}/develop/projects
+    [ -d ${AEG_PROJ_DEV_DIR} ] && PROJ_DEV_DIR=${AEG_PROJ_DEV_DIR}
+fi
+
+export AEG_SW_DIR
+export PROJ_DEV_DIR
+
+_project()
+{
+    local cur
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    proj_dirs=$(compgen -d ${PROJ_DEV_DIR}/ | awk -F/ '{print $NF}')
+    COMPREPLY=($(compgen -W "${proj_dirs}" -- ${cur}))
+    return 0
+}
+
+project()
+{
+    PROJ_DIR=${PROJ_DEV_DIR}/$1
+    if [ -d "${PROJ_DIR}" ]; then
+        echo "Changing to project directory ${PROJ_DIR}"
+        cd $PROJ_DIR
+    else
+        echo "No such project directory: $PROJ_DIR"
+    fi
+}
+
+complete -o nospace -F _project project
 
 # Set up powerline if the appropriate path is present
 if [ -d $POWERLINE_NEED_PATH ]; then

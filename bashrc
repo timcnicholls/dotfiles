@@ -138,15 +138,6 @@ docker-env()
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
-#if [ -f $(which virtualenvwrapper.sh 2>/dev/null) ]; then
-#   echo "Yup"
-#   export WORKON_HOME=$HOME/.virtualenvs
-#   if [ ! -d $WORKON_HOME ]; then
-#       mkdir $WORKON_HOME
-#   fi
-#   #source $(which virtualenvwrapper.sh)
-#i
-
 venvwrapper()
 {
   venvwrap_script="virtualenvwrapper.sh"
@@ -168,7 +159,6 @@ workon()
 }
 
 # Source AEG module profile if present
-export AEG_SW_DIR=/aeg_sw
 AEG_MODULE_PROFILE=${AEG_SW_DIR}/etc/profile
 [ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
 
@@ -179,27 +169,7 @@ if [ -d ${AEG_SW_DIR} ]; then
    export AEG_USER_DIR=/aeg_sw/work/users/${USER}
 fi
 
-# IF user project dir exists, create project command and completion control
-if [ -d "${AEG_USER_DIR}/develop/projects" ]; then
-   project()
-   {
-     PROJ_DIR=${AEG_USER_DIR}/develop/projects/$1
-     if [ -d "${PROJ_DIR}" ]; then
-        echo "Changing to project directory ${PROJ_DIR}"
-     	cd $PROJ_DIR
-     else
-        echo "No such project directory: $PROJ_DIR"
-     fi
-   }
-   _aeg_projs()
-   {
-     local cur="${COMP_WORDS[COMP_CWORD]}"
-     COMPREPLY=( $(cd ${AEG_USER_DIR}/develop/projects && compgen -d -- "${cur}" ) )
-   }
-   complete -o nospace -F _aeg_projs project
-fi
-
-if [ "$POWERLINE_ENABLED" -eq 1 ]; then
+if [ ${POWERLINE_ENABLED:-0} -eq 1 ]; then
     export POWERLINE_BASH_CONTINUATION=1
     export POWERLINE_BASH_SELECT=1
     source ${POWERLINE_PACKAGE_PATH}/bindings/bash/powerline.sh
