@@ -161,6 +161,12 @@ venvwrapper()
   fi
 }
 
+workon()
+{
+    venvwrapper
+    workon ${*}
+}
+
 # Source AEG module profile if present
 export AEG_SW_DIR=/aeg_sw
 AEG_MODULE_PROFILE=${AEG_SW_DIR}/etc/profile
@@ -193,7 +199,7 @@ if [ -d "${AEG_USER_DIR}/develop/projects" ]; then
    complete -o nospace -F _aeg_projs project
 fi
 
-if [ -v POWERLINE_ENABLED ]; then
+if [ "$POWERLINE_ENABLED" -eq 1 ]; then
     export POWERLINE_BASH_CONTINUATION=1
     export POWERLINE_BASH_SELECT=1
     source ${POWERLINE_PACKAGE_PATH}/bindings/bash/powerline.sh
