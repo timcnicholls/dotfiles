@@ -163,7 +163,7 @@ AEG_MODULE_PROFILE=${AEG_SW_DIR}/etc/profile
 [ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
 
 # If AEG directory present, set up various
-if [ -d ${AEG_SW_DIR} ]; then
+if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
    alias code='module load git && module load cmake && module load python/2 && /usr/bin/code'
    
    export AEG_USER_DIR=/aeg_sw/work/users/${USER}

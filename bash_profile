@@ -18,13 +18,14 @@ case ${OSTYPE} in
         echo "Unknown OS type"
 esac
 
-if [ -d ${AEG_SW_DIR} ]; then
+if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
+    echo AEG_SW_DIR is valid
+    export AEG_SW_DIR
     export AEG_USER_DIR=/aeg_sw/work/users/${USER}
     export AEG_PROJ_DEV_DIR=${AEG_USER_DIR}/develop/projects
     [ -d ${AEG_PROJ_DEV_DIR} ] && PROJ_DEV_DIR=${AEG_PROJ_DEV_DIR}
 fi
 
-export AEG_SW_DIR
 export PROJ_DEV_DIR
 
 _project()
