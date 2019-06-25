@@ -1,9 +1,9 @@
-echo "In bashrc"
-
+# Source system bashrc if present
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# Source user non-bash profile if present
 if [ -f ~/.profile ]; then
    . ~/.profile
 fi
@@ -16,6 +16,7 @@ case ${OSTYPE} in
         POWERLINE_PACKAGE_PATH=${HOME}/Library/Python/2.7/lib/python/site-packages/powerline
         HAS_BREW=1
         PROJ_DEV_DIR=${HOME}/Develop/projects
+        GOPATH=$HOME/Develop/tools/go
         ;;
     linux-gnu)
         AEG_SW_DIR=/aeg_sw
@@ -28,16 +29,49 @@ case ${OSTYPE} in
         echo "Unknown OS type"
 esac
 
+# On AEG dev hosts mounting /aeg_sw, set up environment accordingly and override PROJ_DEV_DIR
 if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
-    echo AEG_SW_DIR is valid
     export AEG_SW_DIR
-    export AEG_USER_DIR=/aeg_sw/work/users/${USER}
+    export AEG_USER_DIR=${AEG_SW_DIR}/work/users/${USER}
     export AEG_PROJ_DEV_DIR=${AEG_USER_DIR}/develop/projects
     [ -d ${AEG_PROJ_DEV_DIR} ] && PROJ_DEV_DIR=${AEG_PROJ_DEV_DIR}
-fi
 
+    # Source AEG module profile if present
+    AEG_MODULE_PROFILE=${AEG_SW_DIR}/etc/profile
+    [ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
+
+    # Alias VSCode command line to preload recent git, cmake & python
+    alias code='module load git && module load cmake && module load python/2 && /usr/bin/code'
+
+fi
 export PROJ_DEV_DIR
 
+# Internal function to support project name completions
+_project()
+{
+    local cur
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    proj_dirs=$(compgen -d ${PROJ_DEV_DIR}/ | awk -F/ '{print $NF}')
+    COMPREPLY=($(compgen -W "${proj_dirs}" -- ${cur}))
+    return 0
+}
+
+# Function to switch to project development directory
+project()
+{
+    PROJ_DIR=${PROJ_DEV_DIR}/$1
+    if [ -d "${PROJ_DIR}" ]; then
+        echo "Changing to project directory ${PROJ_DIR}"
+        cd $PROJ_DIR
+    else
+        echo "No such project directory: $PROJ_DIR"
+    fi
+}
+
+# Add completion control to project function 
+complete -o nospace -F _project project
+
+# Function to add paths
 pathadd()
 {
     path=${1:-/usr/bin}
@@ -57,8 +91,8 @@ pathadd()
 pathadd $HOME/bin
 pathadd /usr/local/bin
 
-GOPATH=$HOME/Develop/tools/go
-if [ -d $GOPATH ]; then
+# Set up GOPATH if present on system
+if [ -z ${GOPATH} ] && [ -d ${GOPATH} ]; then
     export GOPATH
     pathadd $GOPATH after
 fi
@@ -108,68 +142,16 @@ psl ()
     ps -l -u ${1:-$USER}
 }
 
+# Shorthand to less on something on the path
 lw()
 {
-    less `which $*`
+    less $(which $*)
 }
-
-# Web Proxy config
-export ral_http_proxy="http://wwwcache.rl.ac.uk:8080"
-export ral_https_proxy="https://wwwcache.rl.ac.uk:8080"
-export no_proxy="localhost,rl.ac.uk"
-
-proxy()
-{
-    cmd=${1:-check}
-    quiet=${2:-}
-    case ${1:-check} in
-    on)
-        if [ -z "$quiet" ]; then echo "Enabling HTTP(S) proxy at URL $ral_proxy_url"; fi
-        export http_proxy_url=$ral_http_proxy
-        export https_proxy_url=$ral_https_proxy
-        export http_proxy=$ral_http_proxy
-        export https_proxy=$ral_https_proxy
-        ;;
-    off)
-        if [ -z "$quiet" ]; then echo "Disabling HTTP(S) proxy"; fi
-        unset http_proxy
-        unset https_proxy
-        unset http_proxy_url
-        unset https_proxy_url
-        ;;
-    check)
-        if [ -n "$http_proxy" ]; then
-            echo "HTTP(S) proxy is enabled: $http_proxy"
-        else
-            echo "HTTP(S) proxy is disabled"
-        fi
-        ;;
-    *)
-        echo "Unknown command specified: $1"
-        ;;
-    esac
-}
-
-proxy off quiet
-
-# Docker environment setup
-DOCKER_MACHINE_DEFAULT="default"
-
-docker-env()
-{
-    eval "$(docker-machine env ${1:-$DOCKER_MACHINE_DEFAULT})"
-    docker_machine_ip="$(docker-machine ip $DOCKER_MACHINE_NAME)"
-    if ! [[ "$no_proxy" =~ (^|,)"${docker_machine_ip}"(,|$) ]]; then
-        no_proxy=${no_proxy},${docker_machine_ip}
-        export no_proxy
-    fi
-    echo "Set up docker environment for machine \"$DOCKER_MACHINE_NAME\" with IP address ${docker_machine_ip}"
-}
-
 
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
+# Function to ease setting up virtualenvrwapper environments
 venvwrapper()
 {
   venvwrap_script="virtualenvwrapper.sh"
@@ -185,43 +167,11 @@ venvwrapper()
   fi
 }
 
+# Lazy loading of virtualenv wrapper for the workon function
 workon()
 {
     venvwrapper && workon ${*}
 }
-
-# Source AEG module profile if present
-AEG_MODULE_PROFILE=${AEG_SW_DIR}/etc/profile
-[ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
-
-# If AEG directory present, set up various
-if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
-   alias code='module load git && module load cmake && module load python/2 && /usr/bin/code'
-   
-   export AEG_USER_DIR=/aeg_sw/work/users/${USER}
-fi
-
-_project()
-{
-    local cur
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    proj_dirs=$(compgen -d ${PROJ_DEV_DIR}/ | awk -F/ '{print $NF}')
-    COMPREPLY=($(compgen -W "${proj_dirs}" -- ${cur}))
-    return 0
-}
-
-project()
-{
-    PROJ_DIR=${PROJ_DEV_DIR}/$1
-    if [ -d "${PROJ_DIR}" ]; then
-        echo "Changing to project directory ${PROJ_DIR}"
-        cd $PROJ_DIR
-    else
-        echo "No such project directory: $PROJ_DIR"
-    fi
-}
-
-complete -o nospace -F _project project
 
 # Set up brew completions if brew installed
 if [ -n "$HAS_BREW" ]; then
