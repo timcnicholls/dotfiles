@@ -112,6 +112,8 @@ export PS1=$PS1_LONG
 export PS2='+> '
 alias ps1='export PS1=$PS1_LONG'
 alias ps1s='export PS1=$PS1_SHORT'
+export SHORT_HOST=$(hostname -s)
+export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${SHORT_HOST}: $(dirs +0)\007"'
 
 # Aliases
 alias m='less -M'
@@ -129,7 +131,6 @@ set -o noclobber
 set bell-style off
 
 export VISUAL="emacs -nw"
-export SHORT_HOST=`/bin/hostname -s`
 
 #Full and Long process lists, default user
 psf ()
