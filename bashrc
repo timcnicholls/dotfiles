@@ -12,8 +12,8 @@ fi
 case ${OSTYPE} in
     darwin*)
         POWERLINE_NEED_PATH=/usr/local/opt
-        POWERLINE_PATH=${HOME}/Library/Python/2.7/bin
-        POWERLINE_PACKAGE_PATH=${HOME}/Library/Python/2.7/lib/python/site-packages/powerline
+        POWERLINE_PATH=${HOME}/Library/Python/3.7/bin
+        POWERLINE_PACKAGE_PATH=${HOME}/Library/Python/3.7/lib/python/site-packages/powerline
         HAS_BREW=1
         PROJ_DEV_DIR=${HOME}/Develop/projects
         GOPATH=$HOME/Develop/tools/go
