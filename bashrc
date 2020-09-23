@@ -11,15 +11,16 @@ fi
 # Set up OS-dependent variables
 case ${OSTYPE} in
     darwin*)
-        POWERLINE_NEED_PATH=/usr/local/opt
-        POWERLINE_PATH=${HOME}/Library/Python/3.7/bin
-        POWERLINE_PACKAGE_PATH=${HOME}/Library/Python/3.7/lib/python/site-packages/powerline
+        LOCAL_DIR=${HOME}/.local
+        POWERLINE_NEED_PATH=${LOCAL_DIR}
+        POWERLINE_PATH=${LOCAL_DIR}/bin
+        POWERLINE_PACKAGE_PATH=${LOCAL_DIR}/lib/python3.8/site-packages/powerline
         HAS_BREW=1
         PROJ_DEV_DIR=${HOME}/Develop/projects
         GOPATH=$HOME/Develop/tools/go
         ;;
     linux-gnu)
-        LOCAL_DIR=.local
+        LOCAL_DIR=${HOME}/.local
         if [ -x /usr/bin/lsb_release ]; then
            dist_release=$(/usr/bin/lsb_release -rs)
            if [[ $dist_release =~ ^6 ]]; then
@@ -159,28 +160,6 @@ lw()
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
-# Function to ease setting up virtualenvrwapper environments
-venvwrapper()
-{
-  venvwrap_script="virtualenvwrapper.sh"
-  if command -v ${venvwrap_script} >/dev/null 2>&1; then
-    export WORKON_HOME=$HOME/.virtualenvs
-    if [ ! -d $WORKON_HOME ]; then
-       mkdir $WORKON_HOME
-    fi
-    source $(command -v ${venvwrap_script})
-  else
-    echo "Cannot locate ${venvwrap_script}"
-    return 1
-  fi
-}
-
-# Lazy loading of virtualenv wrapper for the workon function
-workon()
-{
-    venvwrapper && workon ${*}
-}
-
 # Set up brew completions if brew installed
 if [ -n "$HAS_BREW" ]; then
     if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -200,3 +179,37 @@ if [ ${POWERLINE_ENABLED:-0} -eq 1 ]; then
     export POWERLINE_BASH_SELECT=1
     source ${POWERLINE_PACKAGE_PATH}/bindings/bash/powerline.sh
 fi
+
+# If pyenv is installed, bootstrap virtualenv based on that, otherwise
+# use the canonical virtualenvwrapper mechanism. In either case, define
+# a workon function that lazily sets up the correct environment before
+# getting replaced by virtualenvwrapper
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+
+    workon()
+    {
+        pyenv virtualenvwrapper && workon ${*}
+    }
+else
+    venvwrapper()
+    {
+    venvwrap_script="virtualenvwrapper.sh"
+    if command -v ${venvwrap_script} >/dev/null 2>&1; then
+        export WORKON_HOME=$HOME/.virtualenvs
+        if [ ! -d $WORKON_HOME ]; then
+        mkdir $WORKON_HOME
+        fi
+        source $(command -v ${venvwrap_script})
+    else
+        echo "Cannot locate ${venvwrap_script}"
+        return 1
+    fi
+    }
+
+    workon()
+    {
+        venvwrapper && workon ${*}
+    }
+fi
+
