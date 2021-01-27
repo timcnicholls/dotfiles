@@ -8,13 +8,18 @@ if [ -f ~/.profile ]; then
    . ~/.profile
 fi
 
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
 # Set up OS-dependent variables
 case ${OSTYPE} in
     darwin*)
         LOCAL_DIR=${HOME}/.local
         POWERLINE_NEED_PATH=${LOCAL_DIR}
         POWERLINE_PATH=${LOCAL_DIR}/bin
-        POWERLINE_PACKAGE_PATH=${LOCAL_DIR}/lib/python3.8/site-packages/powerline
+        PYTHON_USER_SITE=$(python -m site --user-site)
+        POWERLINE_PACKAGE_PATH=${PYTHON_USER_SITE}/powerline
         HAS_BREW=1
         PROJ_DEV_DIR=${HOME}/Develop/projects
         GOPATH=$HOME/Develop/tools/go
@@ -157,6 +162,11 @@ lw()
     less $(which $*)
 }
 
+mkcd()
+{
+    mkdir -p "$1" && cd "$1"
+}
+
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
@@ -185,8 +195,6 @@ fi
 # a workon function that lazily sets up the correct environment before
 # getting replaced by virtualenvwrapper
 if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-
     workon()
     {
         pyenv virtualenvwrapper && workon ${*}
