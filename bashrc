@@ -29,13 +29,13 @@ case ${OSTYPE} in
         if [ -x /usr/bin/lsb_release ]; then
            dist_release=$(/usr/bin/lsb_release -rs)
            if [[ $dist_release =~ ^6 ]]; then
-             LOCAL_DIR=.local-el6-2.7
+             LOCAL_DIR=${HOME}/.local-el6-2.7
            fi
         fi
         AEG_SW_DIR=/aeg_sw
         POWERLINE_NEED_PATH=${AEG_SW_DIR}
-        POWERLINE_PATH=${HOME}/${LOCAL_DIR}/bin
-        POWERLINE_PACKAGE_PATH=${HOME}/${LOCAL_DIR}/lib/python2.7/site-packages/powerline
+        POWERLINE_PATH=${LOCAL_DIR}/bin
+        POWERLINE_PACKAGE_PATH=${LOCAL_DIR}/lib/python2.7/site-packages/powerline
         PROJ_DEV_DIR=${HOME}/develop/projects
         ;;
     *)
