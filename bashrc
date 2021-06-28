@@ -57,7 +57,16 @@ if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
     [ -f ${AEG_MODULE_PROFILE} ] && source ${AEG_MODULE_PROFILE}
 
     # Alias VSCode command line to preload recent git, cmake & python
-    alias code='module load git && module load cmake && module load python/2 && /usr/bin/code'
+    #alias code='module load git && module load cmake && module load python/2 && /usr/bin/code'
+    code()
+    {
+        echo "Starting VS Code with side-loaded GCC libs..."
+        module load git
+        module load cmake
+        module load python/3-9
+        export LD_LIBRARY_PATH=/aeg_sw/tools/CentOS7-x86_64/gcc/9-3-0/prefix/lib64:$LD_LIBRARY_PATH
+        /usr/bin/code $*
+    }
 
 fi
 export PROJ_DEV_DIR
@@ -223,4 +232,3 @@ else
         venvwrapper && workon ${*}
     }
 fi
-
