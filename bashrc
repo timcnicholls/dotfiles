@@ -150,6 +150,7 @@ alias ldir='ls -dF *(/)'
 alias lldir='ls -dlF *(/)'
 alias vi='vim'
 alias pph='export PYTHONPATH=`pwd`:${PYTHONPATH}'
+alias reset_cursor='echo -en "\e[?25h"'
 
 # Options
 set -o noclobber
