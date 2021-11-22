@@ -19,27 +19,33 @@ fi
 case ${OSTYPE} in
     darwin*)
         LOCAL_DIR=${HOME}/.local
-        POWERLINE_NEED_PATH=${LOCAL_DIR}
-        POWERLINE_PATH=${LOCAL_DIR}/bin
-        PYTHON_USER_SITE=$(python -m site --user-site)
-        POWERLINE_PACKAGE_PATH=${PYTHON_USER_SITE}/powerline
-        HAS_BREW=1
         PROJ_DEV_DIR=${HOME}/Develop/projects
         GOPATH=$HOME/Develop/tools/go
+        HAS_BREW=1
         ;;
     linux-gnu)
-        LOCAL_DIR=${HOME}/.local
-        if [ -x /usr/bin/lsb_release ]; then
-           dist_release=$(/usr/bin/lsb_release -rs)
-           if [[ $dist_release =~ ^6 ]]; then
-             LOCAL_DIR=${HOME}/.local-el6-2.7
-           fi
-        fi
+
         AEG_SW_DIR=/aeg_sw
-        POWERLINE_NEED_PATH=${AEG_SW_DIR}
-        POWERLINE_PATH=${LOCAL_DIR}/bin
-        POWERLINE_PACKAGE_PATH=${LOCAL_DIR}/lib/python2.7/site-packages/powerline
+        LOCAL_DIR=${HOME}/.local
         PROJ_DEV_DIR=${HOME}/develop/projects
+
+        # Override .local setting in LOCAL_DIR for specific distros/versions
+        if [ -x /usr/bin/lsb_release ]; then
+           dist_name=$(/usr/bin/lsb_release -is)
+           dist_release=$(/usr/bin/lsb_release -rs)
+           case ${dist_name} in
+              CentOS*)
+                if [[ $dist_release =~ ^6 ]]; then
+                    LOCAL_DIR=${HOME}/.local-el6-2.7
+                fi
+                ;;
+              Ubuntu*)
+                LOCAL_DIR=${HOME}/.local-ubuntu
+                ;;
+           esac
+        fi
+
+        export PYTHONUSERBASE=${LOCAL_DIR}
         ;;
     *)
         echo "Unknown OS type"
@@ -60,11 +66,11 @@ if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
     #alias code='module load git && module load cmake && module load python/2 && /usr/bin/code'
     code()
     {
-        echo "Starting VS Code with side-loaded GCC libs..."
+        # echo "Starting VS Code with side-loaded GCC libs..."
         module load git
         module load cmake
         module load python/3-9
-        export LD_LIBRARY_PATH=/aeg_sw/tools/CentOS7-x86_64/gcc/9-3-0/prefix/lib64:$LD_LIBRARY_PATH
+        # export LD_LIBRARY_PATH=/aeg_sw/tools/CentOS7-x86_64/gcc/9-3-0/prefix/lib64:$LD_LIBRARY_PATH
         /usr/bin/code $*
     }
 
@@ -191,7 +197,10 @@ if [ -n "$HAS_BREW" ]; then
 fi
 
 # Set up powerline if the appropriate path is present
-if [ -d $POWERLINE_NEED_PATH ]; then
+POWERLINE_PATH=${LOCAL_DIR}/bin
+if [ -d $POWERLINE_PATH ]; then
+    PYTHON_USER_SITE=$(python -m site --user-site)
+    POWERLINE_PACKAGE_PATH=${PYTHON_USER_SITE}/powerline
     export PATH=$PATH:$POWERLINE_PATH
     export POWERLINE_PACKAGE_PATH
     powerline-daemon -q
