@@ -75,6 +75,12 @@ if [ ! -z ${AEG_SW_DIR} ] && [ -d ${AEG_SW_DIR} ]; then
     }
 
 fi
+
+if [ ! -d ${PROJ_DEV_DIR} ]; then
+    AEGSHR_USER_DIR=/groups/AEGshr/work/users/${USER}
+    AEGSHR_PROJ_DEV_DIR=${AEGSHR_USER_DIR}/develop/projects
+    [ -d ${AEGSHR_PROJ_DEV_DIR} ] && PROJ_DEV_DIR=${AEGSHR_PROJ_DEV_DIR}
+fi
 export PROJ_DEV_DIR
 
 # Internal function to support project name completions
@@ -224,17 +230,22 @@ if command -v pyenv 1>/dev/null 2>&1; then
 else
     venvwrapper()
     {
-    venvwrap_script="virtualenvwrapper.sh"
-    if command -v ${venvwrap_script} >/dev/null 2>&1; then
-        export WORKON_HOME=$HOME/.virtualenvs
-        if [ ! -d $WORKON_HOME ]; then
-        mkdir $WORKON_HOME
+        venvwrap_script="virtualenvwrapper.sh"
+        if command -v ${venvwrap_script} >/dev/null 2>&1; then
+            WORKON_HOME=$HOME/.virtualenvs
+            HOST_WORKON_HOME=${WORKON_HOME}-$(hostname -s)
+            if [ -d $HOST_WORKON_HOME ]; then
+                WORKON_HOME=$HOST_WORKON_HOME
+            fi
+            export WORKON_HOME
+            if [ ! -d $WORKON_HOME ]; then
+                mkdir $WORKON_HOME
+            fi
+            source $(command -v ${venvwrap_script})
+        else
+            echo "Cannot locate ${venvwrap_script}"
+            return 1
         fi
-        source $(command -v ${venvwrap_script})
-    else
-        echo "Cannot locate ${venvwrap_script}"
-        return 1
-    fi
     }
 
     workon()
