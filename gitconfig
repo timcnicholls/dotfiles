@@ -65,3 +65,5 @@
 	helper = store
 [pull]
 	rebase = false
+[safe]
+	directory = /etc/ansible
