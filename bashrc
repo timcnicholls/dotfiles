@@ -41,7 +41,11 @@ case ${OSTYPE} in
 		WRAP_CODE=1
                 ;;
               Ubuntu*)
-                LOCAL_DIR=${HOME}/.local-ubuntu
+		if [[ $dist_release =~ ^22 ]]; then
+		   LOCAL_DIR=${HOME}/.local-ubuntu-22
+		else
+		   LOCAL_DIR=${HOME}/.local-ubuntu
+		fi
                 ;;
            esac
         fi
