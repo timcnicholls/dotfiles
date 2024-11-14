@@ -201,9 +201,19 @@ mkcd()
 
 # Set up brew completions if brew installed
 if [ -n "$HAS_BREW" ]; then
-    if [ -f $(brew --prefix)/etc/bash_completion ]; then
-        . $(brew --prefix)/etc/bash_completion
+    if [ -f /opt/homebrew/bin/brew ]; then
+       eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
+    if [ -f $(brew --prefix)/etc/profile.d/bash_completion.sh ]; then
+        . $(brew --prefix)/etc/profile.d/bash_completion.sh
+    fi
+fi
+
+if command -v pyenv 1>/dev/null 2>&1; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
 fi
 
 # Set up powerline if the appropriate path is present
@@ -257,3 +267,5 @@ else
         venvwrapper && workon ${*}
     }
 fi
+
+[ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
