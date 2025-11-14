@@ -269,3 +269,16 @@ else
 fi
 
 [ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
+
+if command -v s5cmd 1>/dev/null 2>&1; then
+    export S3_ENDPOINT_URL=https://s3.echo.stfc.ac.uk
+fi
+
+# Load nvm (Node Version Manager) if installed
+NVM_DIR="$HOME/.nvm"
+if [ -d "$NVM_DIR" ]; then
+    export NVM_DIR
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
+
