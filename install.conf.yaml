@@ -7,6 +7,9 @@
 - link:
     ~/.bashrc: bashrc
     ~/.bash_profile: bash_profile
+    ~/.bashrc.d: bashrc.d
+    ~/.bashrc-darwin: bashrc-darwin
+    ~/.bashrc-linux: bashrc-linux
     ~/.inputrc: inputrc
     ~/.gitconfig: gitconfig
 
