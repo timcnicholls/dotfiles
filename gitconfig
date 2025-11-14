@@ -67,3 +67,5 @@
 	rebase = false
 [safe]
 	directory = /etc/ansible
+[init]
+	defaultBranch = main
