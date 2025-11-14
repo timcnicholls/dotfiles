@@ -1,0 +1,28 @@
+export LOCAL_DIR=${HOME}/.local
+export PROJ_DEV_DIR=${HOME}/develop/projects
+export WORKON_HOME=${HOME}/.virtualenvs
+export AEG_SW_DIR=/aeg_sw
+
+# Override .local setting in LOCAL_DIR for specific distros/versions
+if [ -x /usr/bin/lsb_release ]; then
+    dist_name=$(/usr/bin/lsb_release -is)
+    dist_release=$(/usr/bin/lsb_release -rs)
+    case ${dist_name} in
+        CentOS*)
+        if [[ $dist_release =~ ^6 ]]; then
+            LOCAL_DIR=${HOME}/.local-el6-2.7
+        fi
+        WRAP_CODE=1
+        ;;
+        Ubuntu*)
+        if [[ $dist_release =~ ^22 ]]; then
+            LOCAL_DIR=${HOME}/.local-ubuntu-22
+        else
+            LOCAL_DIR=${HOME}/.local-ubuntu
+        fi
+        ;;
+    esac
+    export LOCAL_DIR
+fi
+
+export PYTHONUSERBASE=${LOCAL_DIR}
