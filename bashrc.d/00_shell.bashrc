@@ -28,6 +28,10 @@ alias vi='vim'
 alias pph='export PYTHONPATH=`pwd`:${PYTHONPATH}'
 alias reset_cursor='echo -en "\e[?25h"'
 
+if command -v podman &> /dev/null; then
+    alias docker='podman'
+fi
+
 # Options
 set -o noclobber
 set bell-style off

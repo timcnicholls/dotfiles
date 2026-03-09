@@ -10,3 +10,13 @@ fi
 if [ -f $(brew --prefix)/etc/profile.d/bash_completion.sh ]; then
     . $(brew --prefix)/etc/profile.d/bash_completion.sh
 fi
+
+# Add obsidian CLI to path if it exists
+if [ -f /Applications/Obsidian.app/Contents/MacOS/obsidian ]; then
+    export PATH=$PATH:/Applications/Obsidian.app/Contents/MacOS
+fi
+
+# Added by Antigravity
+if [ -d /Users/tim.nicholls/.antigravity/antigravity/bin ]; then
+    export PATH="/Users/tim.nicholls/.antigravity/antigravity/bin:$PATH"
+fi
